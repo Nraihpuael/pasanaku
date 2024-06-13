@@ -21,11 +21,21 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: yarn install, build
+      - name: npm install, build, and test
         run: |
-          yarn install
-          yarn build
-          
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+
+      - name: Zip artifact for deployment
+        run: zip release.zip ./* -r
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: node-app
+          path: release.zip
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -36,12 +46,20 @@ jobs:
       id-token: write #This is required for requesting the JWT
 
     steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: node-app
+
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+      
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_C78619969420424E84B308998BDEE22C }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D9287F9066B444B58877B16592F58F87 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C892CDA6972C46D2824F8D8D7CD04165 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_31673690E44243B58E2DE5BE0DDF4DC3 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_84E9E80F1BE84D93B494A2FEAC275FAE }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2AE602B246A04137BA4E74ED6E154768 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
