@@ -46,15 +46,14 @@ import { TransferenciaModule } from './transferencia/transferencia.module';
          entities: ['dist/src/**/*.entity{.ts,.js}'],
          autoLoadEntities: true, // Carga automaticamente las entidades
          synchronize: true,  // Realiza las migraciones automaticamente
-         //ssl: false,
-         /*
+         //ssl: false,         
          ssl: true,
          extra: {
            ssl: {
              rejectUnauthorized: false,
            },
          }
-         */
+         
        }),
       }),
     JugadoresModule,
